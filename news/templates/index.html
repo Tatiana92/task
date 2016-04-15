@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<script type="text/javascript" src="{{STATIC_URL}}Dojo/dojo-1.9.2/dojo/dojo.js" djConfig="parseOnLoad:true"></script>
+		<link rel="stylesheet" href="{{STATIC_URL}}Dojo/dojo-1.9.2/dijit/themes/claro/claro.css">
+	</head>
+
+	<body class="claro"  style="height: 100%;">
+		{% load staticfiles %}
+
+		<script>
+			MYMEDIA = '{{ MEDIA_URL }}';
+		</script>	<script src="{% static 'js/news.js' %}"></script>
+		<link rel="stylesheet" href="{% static 'css/news.css' %}">
+		 {% csrf_token %}
+
+
+
+
+		<div data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'" style="height: 100%;" align='center' id="layoutContainer">
+			<div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'" region='top' align='center' style="height: 50px;">
+				<input id="findByName" style="width: 200px;" maxlength="200" type="text" />
+				<button id="findButtonNode" type = "button" onclick="findNews();">Найти</button>
+			</div>
+
+		    <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'" id='menu-pane'>
+		    	<div data-dojo-type="dijit/DropDownMenu" id="categories">
+
+	    				<div data-dojo-type="dijit/MenuItem"  value="{{cat.id}}" onclick="window.location=window.location.origin + '/getall'">Главная</div><a href='/getall'></a>
+			    	{% for cat in category %}
+	    				<div data-dojo-type="dijit/MenuItem"  value="{{cat.id}}" onclick="window.location=window.location.origin +'/cat/{{cat.id}}'">{{cat.name}}</div><a href='/cat{{cat.id}}'></a>
+	    			{% endfor %}
+    			</div>
+		    </div>
+		    <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" id='main-pane' style="width: 530px; display: block;">
+		    <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'" id='info-pane'>
+				{% if news %}
+			    	{% for report in news %}
+				    	<div data-dojo-type="dijit/layout/ContentPane" class='shadow-cp' >
+					        <h3>{{report.name}}</h3>
+					        <p><img src="{{MEDIA_URL}}{{report.photo}}" height="80" alt="Фото" align="left">
+					        {{report.text|truncatechars:300}}
+					        <a href='/vote/{{report.id}}'>...Читать далее...</a> </p>
+						</div>
+				    {% endfor %}
+				{% else %}
+				Не удалось загрузить новости
+			    {% endif %}
+			    </div>
+		    </div>
+		</div>
+	</body>
+</html>
